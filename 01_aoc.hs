@@ -32,7 +32,7 @@ getSumsOfAdjacentTriplets = map sumTriplets . tripletAdjacents
 
 -- Puzzle - 02
 countIncreasingTriplets :: String -> String
-countIncreasingTriplets = show . getCountOfIncreasingPairs . map sumTriplets . tripletAdjacents . readInput
+countIncreasingTriplets = show . getCountOfIncreasingPairs . getSumsOfAdjacentTriplets . readInput
 
 -- main
 -- compile as follows "ghc --make 01_aoc.hs"
