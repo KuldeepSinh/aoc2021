@@ -1,12 +1,18 @@
+readInput :: String -> [Integer]
+readInput = map read . words
+
 pairAdjacents :: Num b => [b] -> [(b, b)]
 pairAdjacents ls = zip ls $ tail ls
 
 filterIncreasingPairs :: [(Integer, Integer)] -> [(Integer, Integer)]
 filterIncreasingPairs = filter (\(a, b) -> a < b)
 
+getCountOfIncreasingPairs :: [Integer] -> Int
+getCountOfIncreasingPairs = length . filterIncreasingPairs . pairAdjacents
+
 -- Puzzle - 01
 countIncreasingPairs :: String -> String
-countIncreasingPairs = show . length . filterIncreasingPairs . pairAdjacents . map read . words
+countIncreasingPairs = show . getCountOfIncreasingPairs . readInput
 
 makeTriplets :: [a] -> [b] -> [c] -> [(a, b, c)]
 makeTriplets (x : xs) (y : ys) (z : zs) = (x, y, z) : makeTriplets xs ys zs
@@ -21,9 +27,12 @@ tripletAdjacents xs = makeTriplets xs ys zs
 sumTriplets :: Num a => (a, a, a) -> a
 sumTriplets (a, b, c) = a + b + c
 
+getSumsOfAdjacentTriplets :: [Integer] -> [Integer]
+getSumsOfAdjacentTriplets = map sumTriplets . tripletAdjacents
+
 -- Puzzle - 02
 countIncreasingTriplets :: String -> String
-countIncreasingTriplets = show . length . filterIncreasingPairs . pairAdjacents . map sumTriplets . tripletAdjacents . map read . words
+countIncreasingTriplets = show . getCountOfIncreasingPairs . getSumsOfAdjacentTriplets . readInput
 
 -- main
 -- compile as follows "ghc --make 01_aoc.hs"
