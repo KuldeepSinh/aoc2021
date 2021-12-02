@@ -35,8 +35,6 @@ countIncreasingTriplets :: String -> String
 countIncreasingTriplets = show . getCountOfIncreasingPairs . getSumsOfAdjacentTriplets . readInput
 
 -- main
--- compile as follows "ghc --make 01_aoc.hs"
--- run as follows "cat input/01_aoc | ./01_aoc"
 main :: IO ()
 -- puzzle 01
 --main = interact countIncreasingPairs
