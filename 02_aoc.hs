@@ -7,39 +7,39 @@ readInput = map words . lines
 makePairs :: [[String]] -> [(String, Int)]
 makePairs xs = [p | x <- xs, let p = (head x, read (last x) :: Int)]
 
-calculateHD :: Num a => (a, a, a) -> [([Char], a)] -> a
-calculateHD (h, d, u) [] = h * (d - u)
-calculateHD (h, d, u) (x : xs)
-  | fst x == "forward" = calculateHD (h + distance, d, u) xs
-  | fst x == "down" = calculateHD (h, d + distance, u) xs
-  | fst x == "up" = calculateHD (h, d, u + distance) xs
+calculate01 :: Num a => (a, a, a) -> [([Char], a)] -> a
+calculate01 (h, d, u) [] = h * (d - u)
+calculate01 (h, d, u) (x : xs)
+  | fst x == "forward" = calculate01 (h + distance, d, u) xs
+  | fst x == "down" = calculate01 (h, d + distance, u) xs
+  | fst x == "up" = calculate01 (h, d, u + distance) xs
   where
     distance = snd x
 
-calculateHA :: Num b => (b, b, b) -> [([Char], b)] -> b
-calculateHA (h, d, a) [] = h * d
-calculateHA (h, d, a) (x : xs)
-  | fst x == "forward" = calculateHA (h + distance, d + a * distance, a) xs
-  | fst x == "down" = calculateHA (h, d, a + distance) xs
-  | fst x == "up" = calculateHA (h, d, a - distance) xs
+calculate02 :: Num b => (b, b, b) -> [([Char], b)] -> b
+calculate02 (h, d, a) [] = h * d
+calculate02 (h, d, a) (x : xs)
+  | fst x == "forward" = calculate02 (h + distance, d + a * distance, a) xs
+  | fst x == "down" = calculate02 (h, d, a + distance) xs
+  | fst x == "up" = calculate02 (h, d, a - distance) xs
   where
     distance = snd x
 
 -- Puzzle - 01
 solvePuzzle01 :: String -> String
-solvePuzzle01 = show . calculateHD (0, 0, 0) . makePairs . readInput
+solvePuzzle01 = show . calculate01 (0, 0, 0) . makePairs . readInput
 
 -- Puzzle - 02
 solvePuzzle02 :: String -> String
-solvePuzzle02 = show . calculateHA (0, 0, 0) . makePairs . readInput
+solvePuzzle02 = show . calculate02 (0, 0, 0) . makePairs . readInput
 
 -- main
 main :: IO ()
 -- puzzle 01
---main = interact solvePuzzle01
+main = interact solvePuzzle01
 
 -- puzzle 02
-main = interact solvePuzzle02
+--main = interact solvePuzzle02
 
 {-
 --- Day 2: Dive! ---
