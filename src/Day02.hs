@@ -1,6 +1,11 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 
+module Day02
+    ( day02_1,
+      day02_2
+    ) where
+
 readInput :: String -> [[String]]
 readInput = map words . lines
 
@@ -26,20 +31,20 @@ calculate02 (h, d, a) (x : xs)
     distance = snd x
 
 -- Puzzle - 01
-solvePuzzle01 :: String -> String
-solvePuzzle01 = show . calculate01 (0, 0, 0) . makePairs . readInput
+day02_1 :: IO ()
+day02_1 = interact $ show . calculate01 (0, 0, 0) . makePairs . readInput
 
 -- Puzzle - 02
-solvePuzzle02 :: String -> String
-solvePuzzle02 = show . calculate02 (0, 0, 0) . makePairs . readInput
+day02_2 :: IO ()
+day02_2 = interact $ show . calculate02 (0, 0, 0) . makePairs . readInput
 
--- main
-main :: IO ()
--- puzzle 01
-main = interact solvePuzzle01
+-- -- main
+-- main :: IO ()
+-- -- puzzle 01
+-- main = interact solvePuzzle01
 
--- puzzle 02
---main = interact solvePuzzle02
+-- -- puzzle 02
+-- --main = interact solvePuzzle02
 
 {-
 --- Day 2: Dive! ---
@@ -100,3 +105,4 @@ After following these new instructions, you would have a horizontal position of 
 
 Using this new interpretation of the commands, calculate the horizontal position and depth you would have after following the planned course. What do you get if you multiply your final horizontal position by your final depth?
 -}
+  

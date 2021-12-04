@@ -1,3 +1,8 @@
+module Day01
+    ( day01_1,
+      day01_2
+    ) where
+
 readInput :: String -> [Integer]
 readInput = map read . words
 
@@ -13,6 +18,9 @@ getCountOfIncreasingPairs = length . filterIncreasingPairs . pairAdjacents
 -- Puzzle - 01
 countIncreasingPairs :: String -> String
 countIncreasingPairs = show . getCountOfIncreasingPairs . readInput
+
+day01_1 :: IO ()
+day01_1 = interact countIncreasingPairs
 
 makeTriplets :: [a] -> [b] -> [c] -> [(a, b, c)]
 makeTriplets (x : xs) (y : ys) (z : zs) = (x, y, z) : makeTriplets xs ys zs
@@ -34,13 +42,17 @@ getSumsOfAdjacentTriplets = map sumTriplets . tripletAdjacents
 countIncreasingTriplets :: String -> String
 countIncreasingTriplets = show . getCountOfIncreasingPairs . getSumsOfAdjacentTriplets . readInput
 
--- main
-main :: IO ()
--- puzzle 01
---main = interact countIncreasingPairs
+day01_2 :: IO ()
+day01_2 = interact countIncreasingTriplets
 
--- puzzle 02
-main = interact countIncreasingTriplets
+
+-- -- main
+-- main :: IO ()
+-- -- puzzle 01
+-- --main = interact day01_1
+
+-- -- puzzle 02
+-- main = interact day01_2
 
 {-
 --- Day 1: Sonar Sweep ---

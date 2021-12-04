@@ -1,4 +1,9 @@
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+ {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+
+module Day03
+    ( day03_1,
+      day03_2
+    ) where
 
 import Data.Char (digitToInt)
 import Numeric (readInt)
@@ -36,8 +41,8 @@ powerCounsumption xs = readBinToInt grb * readBinToInt erb
     grb = getGammaRateBin xs
     erb = getEpsilonRateBin grb
 
-solvePuzzle01 :: String -> String
-solvePuzzle01 = show . powerCounsumption
+day03_1 :: IO ()
+day03_1 = interact $ show . powerCounsumption
 
 filterByPosition :: Eq t => Int -> t -> [[t]] -> [[t]]
 filterByPosition p c [] = []
@@ -70,16 +75,16 @@ filterListForCO2 = filterList 0 CO2
 lifeSupportRating :: [String] -> Integer
 lifeSupportRating xs = readBinToInt (filterListForO2 xs) * readBinToInt (filterListForCO2 xs)
 
-solvePuzzle02 :: String -> String
-solvePuzzle02 = show . lifeSupportRating . lines
+day03_2 :: IO ()
+day03_2 = interact $ show . lifeSupportRating . lines
 
--- main
-main :: IO ()
--- puzzle 01
---main = interact solvePuzzle01
+-- -- main
+-- main :: IO ()
+-- -- puzzle 01
+-- --main = day03_1
 
---puzzle 02
-main = interact solvePuzzle02
+-- --puzzle 02
+-- main = day03_2
 
 {-
 --- Day 3: Binary Diagnostic ---
@@ -148,4 +153,4 @@ As there is only one number left, stop; the CO2 scrubber rating is 01010, or 10 
 Finally, to find the life support rating, multiply the oxygen generator rating (23) by the CO2 scrubber rating (10) to get 230.
 
 Use the binary numbers in your diagnostic report to calculate the oxygen generator rating and CO2 scrubber rating, then multiply them together. What is the life support rating of the submarine? (Be sure to represent your answer in decimal, not binary.)
--}
+-}     
