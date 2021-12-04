@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+
 import Data.Char (digitToInt)
 import Numeric (readInt)
 
@@ -8,6 +10,9 @@ transpose x = map head x : transpose (map tail x)
 count01 :: [Char] -> (Int, Int)
 count01 xs = (length $ filter ('0' ==) xs, length $ filter ('1' ==) xs)
 
+count01List :: [String] -> [(Int, Int)]
+count01List = map count01 . transpose
+
 select01 :: Ord a => (a, a) -> Char
 select01 (a, b)
   | a > b = '0'
@@ -17,7 +22,7 @@ readBinToInt :: String -> Integer
 readBinToInt = fst . head . readInt 2 (`elem` "01") digitToInt
 
 getGammaRateBin :: String -> String
-getGammaRateBin = map (select01 . count01) . transpose . lines
+getGammaRateBin = map select01 . count01List . lines
 
 getEpsilonRateBin :: String -> String
 getEpsilonRateBin [] = []
@@ -34,13 +39,47 @@ powerCounsumption xs = readBinToInt grb * readBinToInt erb
 solvePuzzle01 :: String -> String
 solvePuzzle01 = show . powerCounsumption
 
+filterByPosition :: Eq t => Int -> t -> [[t]] -> [[t]]
+filterByPosition p c [] = []
+filterByPosition p c (x : xs)
+  | x !! p == c = x : filterByPosition p c xs
+  | otherwise = filterByPosition p c xs
+
+data BitCriteria = O2 | CO2
+  deriving (Eq)
+
+filterList :: Int -> BitCriteria -> [String] -> String
+filterList _ _ [] = []
+filterList _ _ [x] = x
+filterList position criteria xs
+  | criteria == O2 && uncurry (>) c = filterList (position + 1) O2 (filterByPosition position '0' xs)
+  | criteria == O2 && uncurry (<) c = filterList (position + 1) O2 (filterByPosition position '1' xs)
+  | criteria == O2 && uncurry (==) c = filterList (position + 1) O2 (filterByPosition position '1' xs)
+  | criteria == CO2 && uncurry (>) c = filterList (position + 1) CO2 (filterByPosition position '1' xs)
+  | criteria == CO2 && uncurry (<) c = filterList (position + 1) CO2 (filterByPosition position '0' xs)
+  | criteria == CO2 && uncurry (==) c = filterList (position + 1) CO2 (filterByPosition position '0' xs)
+  where
+    c = count01List xs !! position
+
+filterListForO2 :: [String] -> String
+filterListForO2 = filterList 0 O2
+
+filterListForCO2 :: [String] -> String
+filterListForCO2 = filterList 0 CO2
+
+lifeSupportRating :: [String] -> Integer
+lifeSupportRating xs = readBinToInt (filterListForO2 xs) * readBinToInt (filterListForCO2 xs)
+
+solvePuzzle02 :: String -> String
+solvePuzzle02 = show . lifeSupportRating . lines
+
 -- main
 main :: IO ()
 -- puzzle 01
-main = interact solvePuzzle01
+--main = interact solvePuzzle01
 
--- puzzle 02
---main = interact solvePuzzle02
+--puzzle 02
+main = interact solvePuzzle02
 
 {-
 --- Day 3: Binary Diagnostic ---
