@@ -1,8 +1,10 @@
 # aoc2021
 
-
 ## Compile
-compile as follows "ghc --make 01_aoc.hs"
+
+1. Make required changes in Main.hs to run solution for required puzzle. e.g. "main = day01_1"
+2. Run "stack build"
 
 ## Run
-run as follows "cat input/01_aoc | ./01_aoc"
+
+Run "cat input/day_01.txt | stack exec aoc2021-exe"
