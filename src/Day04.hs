@@ -13,8 +13,8 @@ makeBoards xs = (ys, transpose ys) : makeBoards (drop 5 xs)
   where
     ys = map (map read) (map words $ take 5 xs) :: [[Int]]
 
-typlifyInputs :: [[Char]] -> ([Int], [([[Int]], [[Int]])])
-typlifyInputs (x:xs) = (getInputs x, makeBoards xs)
+tuplifyInputs :: [[Char]] -> ([Int], [([[Int]], [[Int]])])
+tuplifyInputs (x:xs) = (getInputs x, makeBoards xs)
 
 removeMatchingInputFromBoards :: Eq t => t -> [([[t]], [[t]])] -> [([[t]], [[t]])]
 removeMatchingInputFromBoards _ [] = []
@@ -46,10 +46,10 @@ calculateLastWinner score ((i:is), xs)
     summation = calculateSum bs 
 
 day04_1 :: IO ()
-day04_1 = interact $ show . calculateFirstWinner . typlifyInputs . lines
+day04_1 = interact $ show . calculateFirstWinner . tuplifyInputs . lines
 
 day04_2 :: IO ()
-day04_2 = interact $ show . calculateLastWinner 0 . typlifyInputs . lines
+day04_2 = interact $ show . calculateLastWinner 0 . tuplifyInputs . lines
 
 
 {-
