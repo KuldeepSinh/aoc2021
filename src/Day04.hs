@@ -29,9 +29,9 @@ removeMatchingInputFromBoards input (x : xs) = removeMatchingInputFromABoard inp
 
 calculateSum :: (Num p, Eq p) => [([[p]], [[p]])] -> p
 calculateSum [] = 0
-calculateSum (x : xs)
-  | [] `elem` fst x = sum $ map sum (fst x)
-  | [] `elem` snd x = sum $ map sum (snd x)
+calculateSum ((first, second) : xs)
+  | [] `elem` first = sum $ map sum first
+  | [] `elem` second = sum $ map sum second
   | otherwise = calculateSum xs
 
 calculateFirstWinner :: (Num p, Eq p) => ([p], [([[p]], [[p]])]) -> p
