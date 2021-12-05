@@ -3,9 +3,8 @@ module Day04 (day04_1, day04_2) where
 import Data.List.Split (splitOn)
 import Data.List (transpose)
 
-
-getInput :: [Char] -> [Int]
-getInput ls = map read $ splitOn "," ls :: [Int]
+getInputs :: [Char] -> [Int]
+getInputs ls = map read $ splitOn "," ls :: [Int]
 
 makeBoards :: [[Char]] -> [([[Int]], [[Int]])]
 makeBoards [] = []
@@ -14,12 +13,12 @@ makeBoards xs = (ys, transpose ys) : makeBoards (drop 5 xs)
   where
     ys = map (map read) (map words $ take 5 xs) :: [[Int]]
 
-getHeadTail :: [[Char]] -> ([Int], [([[Int]], [[Int]])])
-getHeadTail (x:xs) = (getInput x, makeBoards xs)
+typlifyInputs :: [[Char]] -> ([Int], [([[Int]], [[Int]])])
+typlifyInputs (x:xs) = (getInputs x, makeBoards xs)
 
-removeInput :: Eq t => t -> [([[t]], [[t]])] -> [([[t]], [[t]])]
-removeInput _ [] = []
-removeInput input (x:xs) = (map (filter (/=input)) $ fst x, map (filter (/=input)) $ snd x) : removeInput input xs
+removeMatchingInputFromBoards :: Eq t => t -> [([[t]], [[t]])] -> [([[t]], [[t]])]
+removeMatchingInputFromBoards _ [] = []
+removeMatchingInputFromBoards input (x:xs) = (map (filter (/=input)) $ fst x, map (filter (/=input)) $ snd x) : removeMatchingInputFromBoards input xs
 
 calculateSum :: (Num p, Eq p) => [([[p]], [[p]])] -> p
 calculateSum [] = 0
@@ -28,12 +27,12 @@ calculateSum (x:xs)
   | elem [] (snd x) == True =  (sum $ map sum (snd x))
   | otherwise = calculateSum xs
 
-calculateScore :: (Num p, Eq p) => ([p], [([[p]], [[p]])]) -> p
-calculateScore ((i:is), xs) 
-  | summation == 0 = calculateScore (is, bs) 
+calculateFirstWinner :: (Num p, Eq p) => ([p], [([[p]], [[p]])]) -> p
+calculateFirstWinner ((i:is), xs) 
+  | summation == 0 = calculateFirstWinner (is, bs) 
   | otherwise = summation * i  
   where 
-    bs = removeInput i xs
+    bs = removeMatchingInputFromBoards i xs
     summation = calculateSum bs 
 
 calculateLastWinner :: (Num a, Eq a) => a -> ([a], [([[a]], [[a]])]) -> a
@@ -43,14 +42,14 @@ calculateLastWinner score ((i:is), xs)
   | summation == 0 = calculateLastWinner score (is, bs)  
   | otherwise = calculateLastWinner (summation * i) (is, filter (\(a, b) -> elem [] a /=True && elem [] b /=True) bs)   
   where 
-    bs = removeInput i xs
+    bs = removeMatchingInputFromBoards i xs
     summation = calculateSum bs 
 
 day04_1 :: IO ()
-day04_1 = interact $ show . calculateScore . getHeadTail . lines
+day04_1 = interact $ show . calculateFirstWinner . typlifyInputs . lines
 
 day04_2 :: IO ()
-day04_2 = interact $ show . calculateLastWinner 0 . getHeadTail . lines
+day04_2 = interact $ show . calculateLastWinner 0 . typlifyInputs . lines
 
 
 {-
