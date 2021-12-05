@@ -1,54 +1,56 @@
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+
 module Day04 (day04_1, day04_2) where
 
-import Data.List.Split (splitOn)
 import Data.List (transpose)
+import Data.List.Split (splitOn)
 
 getInputs :: [Char] -> [Int]
 getInputs ls = map read $ splitOn "," ls :: [Int]
 
 makeBoards :: [[Char]] -> [([[Int]], [[Int]])]
 makeBoards [] = []
-makeBoards ([] : xs ) = makeBoards xs
+makeBoards ([] : xs) = makeBoards xs
 makeBoards xs = (ys, transpose ys) : makeBoards (drop 5 xs)
   where
-    ys = map (map read) (map words $ take 5 xs) :: [[Int]]
+    ys = map (map read . words) (take 5 xs) :: [[Int]]
 
 tuplifyInputs :: [[Char]] -> ([Int], [([[Int]], [[Int]])])
-tuplifyInputs (x:xs) = (getInputs x, makeBoards xs)
+tuplifyInputs (x : xs) = (getInputs x, makeBoards xs)
 
 removeMatchingInputFromABoard :: Eq a => a -> ([[a]], [[a]]) -> ([[a]], [[a]])
 removeMatchingInputFromABoard input (first, second) = (removeInput first, removeInput second)
-  where 
-    removeInput = map (filter (/=input)) 
+  where
+    removeInput = map (filter (/= input))
 
 removeMatchingInputFromBoards :: Eq t => t -> [([[t]], [[t]])] -> [([[t]], [[t]])]
 removeMatchingInputFromBoards _ [] = []
-removeMatchingInputFromBoards input (x:xs) =  removeMatchingInputFromABoard input x : removeMatchingInputFromBoards input xs
+removeMatchingInputFromBoards input (x : xs) = removeMatchingInputFromABoard input x : removeMatchingInputFromBoards input xs
 
 calculateSum :: (Num p, Eq p) => [([[p]], [[p]])] -> p
 calculateSum [] = 0
-calculateSum (x:xs)
-  | elem [] (fst x) == True =  (sum $ map sum (fst x))
-  | elem [] (snd x) == True =  (sum $ map sum (snd x))
+calculateSum (x : xs)
+  | [] `elem` fst x = sum $ map sum (fst x)
+  | [] `elem` snd x = sum $ map sum (snd x)
   | otherwise = calculateSum xs
 
 calculateFirstWinner :: (Num p, Eq p) => ([p], [([[p]], [[p]])]) -> p
-calculateFirstWinner ((i:is), xs) 
-  | summation == 0 = calculateFirstWinner (is, bs) 
-  | otherwise = summation * i  
-  where 
+calculateFirstWinner (i : is, xs)
+  | summation == 0 = calculateFirstWinner (is, bs)
+  | otherwise = summation * i
+  where
     bs = removeMatchingInputFromBoards i xs
-    summation = calculateSum bs 
+    summation = calculateSum bs
 
 calculateLastWinner :: (Num a, Eq a) => a -> ([a], [([[a]], [[a]])]) -> a
-calculateLastWinner score ([], _)  = score
-calculateLastWinner score (_, [])  = score
-calculateLastWinner score ((i:is), xs) 
-  | summation == 0 = calculateLastWinner score (is, bs)  
-  | otherwise = calculateLastWinner (summation * i) (is, filter (\(a, b) -> elem [] a /=True && elem [] b /=True) bs)   
-  where 
+calculateLastWinner score ([], _) = score
+calculateLastWinner score (_, []) = score
+calculateLastWinner score (i : is, xs)
+  | summation == 0 = calculateLastWinner score (is, bs)
+  | otherwise = calculateLastWinner (summation * i) (is, filter (\(a, b) -> notElem [] a && notElem [] b) bs)
+  where
     bs = removeMatchingInputFromBoards i xs
-    summation = calculateSum bs 
+    summation = calculateSum bs
 
 day04_1 :: IO ()
 day04_1 = interact $ show . calculateFirstWinner . tuplifyInputs . lines
