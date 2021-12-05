@@ -16,9 +16,14 @@ makeBoards xs = (ys, transpose ys) : makeBoards (drop 5 xs)
 tuplifyInputs :: [[Char]] -> ([Int], [([[Int]], [[Int]])])
 tuplifyInputs (x:xs) = (getInputs x, makeBoards xs)
 
+removeMatchingInputFromABoard :: Eq a => a -> ([[a]], [[a]]) -> ([[a]], [[a]])
+removeMatchingInputFromABoard input (first, second) = (removeInput first, removeInput second)
+  where 
+    removeInput = map (filter (/=input)) 
+
 removeMatchingInputFromBoards :: Eq t => t -> [([[t]], [[t]])] -> [([[t]], [[t]])]
 removeMatchingInputFromBoards _ [] = []
-removeMatchingInputFromBoards input (x:xs) = (map (filter (/=input)) $ fst x, map (filter (/=input)) $ snd x) : removeMatchingInputFromBoards input xs
+removeMatchingInputFromBoards input (x:xs) =  removeMatchingInputFromABoard input x : removeMatchingInputFromBoards input xs
 
 calculateSum :: (Num p, Eq p) => [([[p]], [[p]])] -> p
 calculateSum [] = 0
