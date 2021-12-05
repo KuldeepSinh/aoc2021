@@ -6,4 +6,4 @@ import Day03
 import Day04
 
 main :: IO ()
-main = day04_1
+main = day04_2
